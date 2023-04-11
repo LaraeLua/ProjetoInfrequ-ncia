@@ -1,0 +1,17 @@
+import tkinter as tk
+from tkinter import *
+
+janela = Tk()
+janela.title("Login")
+janela.geometry('500x400')
+
+texto1 = Label(janela, text='LOGIN',width=50 ,bg='purple', foreground='white', font='Arial 15 bold')
+texto1.grid(column=0, row= 1)
+
+email = Label(janela, text='E-mail')
+email.grid(column=0, row=9)
+
+email1 = Entry(janela, width=20)
+email1.place(in_= email, relx = 2, x =-2, y = 2)
+
+janela.mainloop()
