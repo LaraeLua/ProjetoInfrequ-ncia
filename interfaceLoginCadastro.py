@@ -1,5 +1,7 @@
 from tkinter import *
-from tkinter import Tk, ttk
+from tkinter import Tk
+from tkinter import messagebox
+
 
 corVerde = "#00FF00"
 corBranca = "#fff"
@@ -7,23 +9,26 @@ corLaranja = "#da4f1c"
 corPreta = "#000000"
 corRoxo = "#8A2BE2"
 
+def Chamada():
+    
 
-#def Aviso():
-#    Aviso = Toplevel()
-#    Aviso.configure(background=corRoxo)
-#    Aviso.geometry("250x50")
-#    cadastrar = Label(Aviso, text='Cadastro concluido!', anchor=NE, font=("Arial", 15), bg=corRoxo, fg=corBranca)
-#    cadastrar.place(x=35, y=8)
+    entry_value = email1.get()
+
+    if entry_value:
+        from Chamada import Chamada
+        Chamada()
+    else:
+
+        messagebox.showinfo("Aviso", 'Usuário e senha inválidos!')
 
 def Aviso():
-    if Entry == "%":
+    entry_value = email2.get()
 
-        senhaCad = Label(CadastraJan, text='Senha Válida', font=("Arial", 15, "bold"), fg=corRoxo, bg=corBranca)
-        senhaCad.place(x=85, y=180)
-
+    if entry_value:
+        messagebox.showinfo ("Aviso", 'Usuário Cadastrado!')
     else:
-        senhaCad = Label(CadastraJan, text='Senha Inválida', font=("Arial", 15, "bold"), fg=corRoxo, bg=corBranca)
-        senhaCad.place(x=85, y=180)
+        messagebox.showinfo("Aviso", 'Usuário e senha inválidos!')
+
 #criando a aba cadastrar
 def CadastraJan():
     CadastraJan = Toplevel(janela)
@@ -31,6 +36,8 @@ def CadastraJan():
     CadastraJan.title("Cadastre-se")
     CadastraJan.configure(background=corBranca)
     CadastraJan.geometry("500x350")
+
+    global email2
 
     frame_cima = Frame(CadastraJan, width=500, height=50, relief='flat', bg=corRoxo)
     frame_cima.grid(row=0, column=0, pady=0, padx=0, sticky=NSEW)
@@ -45,11 +52,8 @@ def CadastraJan():
     email2 = Entry(CadastraJan, width=40, bg=corBranca, fg=corRoxo)
     email2.place(in_=emailCad, x=88, y=0, height=30)
 
-
-
     senhaCad = Label(CadastraJan, text='Senha', font=("Arial", 15, "bold"), fg=corRoxo, bg=corBranca)
     senhaCad.place(x=85, y=180)
-
 
 
     senha2 = Entry (CadastraJan, width=40, bg=corBranca, fg=corRoxo)
@@ -91,14 +95,10 @@ senha.place(x=85, y=180)
 senha1 = Entry(janela, width=40, bg=corBranca, fg=corRoxo)
 senha1.place(in_= senha, x=88, y=0, height=30)
 
-botaoEnt = Button(janela, width=15, text='Entrar', font=("Arial", 10, "bold"), fg=corBranca, bg=corRoxo)
+botaoEnt = Button(janela, width=15, text='Entrar', font=("Arial", 10, "bold"), fg=corBranca, bg=corRoxo, command = Chamada)
 botaoEnt.place(x=85, y=250)
 
 botaoCad = Button(janela, width=15, text='Cadastrar', font=("Arial", 10, "bold"), fg=corBranca, bg=corRoxo, command = CadastraJan)
 botaoCad.place(x=290, y=250)
 
-
-
 janela.mainloop()
-
-
