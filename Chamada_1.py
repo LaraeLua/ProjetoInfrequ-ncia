@@ -3,7 +3,7 @@ from tkinter import ttk
 from tkinter import messagebox
 import pymysql
 import datetime 
-from subprocess import *
+from subprocess import call
 
 corRoxo = "#8A2BE2"
 
@@ -69,7 +69,7 @@ def deletar():
                                     database="infrequencia")
         cursor = connection.cursor()
 
-        query = (f'DELETE FROM primeiro WHERE numero = "{armazenar_nmr}" and nome = "{armazenar_nome}" and horario = "{armazenar_hor}" and serie = "{armazenar_serie}" and data = "{data_atual}" <= "{hoje}"')
+        query = (f'DELETE FROM primeiro WHERE numero = "{armazenar_nmr}" and nome = "{armazenar_nome}" and horario = "{armazenar_hor}" and serie = "{armazenar_serie}" and data = "{hoje}"')
         cursor.execute(query)
         print(query)
         connection.commit()
@@ -80,11 +80,10 @@ def deletar():
 
 
 def editar():    
-    selected_item = tv.selection()[1]
+    selected_item = tv.selection()[0]
     tv.item(selected_item, values=(vnmr.get(), vnome.get(), vhor.get(), vserie.get()))
     
-    
-    global armazenar_nmr
+    global hoje
 
     connection = pymysql.connect(host="localhost",
                                     user="root",
@@ -92,7 +91,7 @@ def editar():
                                     database="infrequencia")
     cursor = connection.cursor()
 
-    query = (f'UPDATE primeiro SET numero = "{vnmr.get()}", nome = "{vnome.get()}", horario = "{vhor.get()}", serie = "{vserie.get()}" WHERE numero = "{armazenar_nmr}"')
+    query = (f'UPDATE primeiro SET numero = "{vnmr.get()}", nome = "{vnome.get()}", horario = "{vhor.get()}", serie = "{vserie.get()}" WHERE data = "{hoje}"')
     cursor.execute(query)
     print(query)
     connection.commit()
@@ -117,7 +116,7 @@ def clicker(e):
 def voltar():
     app.destroy()
     
-    run("../Infrequencia/MenuProf.exe")
+    call(["python", "ProjetoInfrequencia-main\\MenuProf.py"])
 
 def center(app):
     

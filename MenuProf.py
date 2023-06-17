@@ -11,16 +11,19 @@ class MenuProf:
     pass
 
 def Chamada_1():
+    janela.destroy() 
     from Chamada_1 import Chamada_1
     Chamada_1()
     return
 
 def Chamada_2():
+    janela.destroy() 
     from Chamada_2 import Chamada_2
     Chamada_2()
     return
 
 def Chamada_3():
+    janela.destroy() 
     from Chamada_3 import Chamada_3
     Chamada_3()
     return

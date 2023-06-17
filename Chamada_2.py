@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import messagebox
 import pymysql
 import datetime 
+from subprocess import call
 
 aberto = datetime.datetime.now()   
 
@@ -79,9 +80,6 @@ def deletar():
 
 
 def editar():    
-    global hoje
-    time_diff = hoje - aberto
-    print(f"Seu aniversário é daqui a {time_diff}")
 
     selected_item = tv.selection()[0]
     tv.item(selected_item, values=(vnmr.get(), vnome.get(), vhor.get(), vserie.get()))
@@ -118,9 +116,9 @@ def clicker(e):
 
 def voltar():
     app.destroy()
-    from MenuProf import MenuProf
-    MenuProf()
-
+    
+    call(["python", "ProjetoInfrequencia-main\\MenuProf.py"])
+    
 def center(app):
     
     app.update_idletasks()

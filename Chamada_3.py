@@ -2,6 +2,10 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 import pymysql
+import datetime 
+from subprocess import call
+
+aberto = datetime.datetime.now()   
 
 corRoxo = "#8A2BE2"
 
@@ -14,14 +18,16 @@ def inserir():
     global armazenar_nome
     global armazenar_hor
     global armazenar_serie
-
+    global hoje
 
     if vnmr.get()=="" or vnome.get()=="" or vhor.get()=="" or vserie.get()=="":
         messagebox.showinfo(title="ERRO", message="Digite todos os dados")
         return
+    
     else:
         tv.insert("","end", values=(vnmr.get(), vnome.get(), vhor.get(), vserie.get()))
 
+        hoje = datetime.datetime.now()
         armazenar_nmr = vnmr.get()
         armazenar_nome = vnome.get()
         armazenar_hor = vhor.get()
@@ -33,7 +39,7 @@ def inserir():
                                     database="infrequencia")
         cursor = connection.cursor()
 
-        query = (f'INSERT INTO frequencia(numero, nome, horario, serie) VALUES ("{armazenar_nmr}", "{armazenar_nome}",  "{armazenar_hor}",  "{armazenar_serie}")')
+        query = (f'INSERT INTO terceiro(numero, nome, horario, serie, data) VALUES ("{armazenar_nmr}", "{armazenar_nome}",  "{armazenar_hor}",  "{armazenar_serie}", "{hoje}")')
         cursor.execute(query)
         print(query)
         connection.commit()
@@ -59,7 +65,7 @@ def deletar():
                                     database="infrequencia")
         cursor = connection.cursor()
 
-        query = (f'DELETE FROM frequencia WHERE numero = "{armazenar_nmr}" AND nome = "{armazenar_nome}"')
+        query = (f'DELETE FROM terceiro  WHERE numero = "{armazenar_nmr}" and nome = "{armazenar_nome}" and horario = "{armazenar_hor}" and serie = "{armazenar_serie}" and data = "{hoje}"')
         cursor.execute(query)
         print(query)
         connection.commit()
@@ -82,7 +88,7 @@ def editar():
                                     database="infrequencia")
     cursor = connection.cursor()
 
-    query = (f'UPDATE frequencia SET numero = "{vnmr.get()}", nome = "{vnome.get()}", horario = "{vhor.get()}", data = "{vserie.get()}" WHERE numero = "{armazenar_nmr}"')
+    query = (f'UPDATE terceiro SET numero = "{vnmr.get()}", nome = "{vnome.get()}", horario = "{vhor.get()}" WHERE numero = "{vnmr.get()}" and data = "{hoje}"')
     cursor.execute(query)
     print(query)
     connection.commit()
@@ -106,10 +112,8 @@ def clicker(e):
     
 def voltar():
     app.destroy()
-    from MenuProf import MenuProf
-    MenuProf()
     
-    return
+    call(["python", "ProjetoInfrequencia-main\\MenuProf.py"])
 
 def center(app):
     

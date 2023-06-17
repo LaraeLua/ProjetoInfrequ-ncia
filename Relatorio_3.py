@@ -3,6 +3,7 @@ from tkinter import ttk
 import pymysql
 from reportlab.pdfgen import canvas
 import datetime 
+from subprocess import call
 
 data_atual = datetime.date.today()
 
@@ -17,7 +18,7 @@ def popular():
                                     database="infrequencia")
     cursor = connection.cursor()
 
-    query = ("SELECT numero, nome, horario, serie FROM frequencia")
+    query = ("SELECT numero, nome, horario, serie FROM terceiro")
     cursor.execute(query)
     results = cursor.fetchall()     
     connection.commit()
@@ -29,8 +30,8 @@ def popular():
 
 def voltar():
     app.destroy()
-    from MenuSec import MenuSec
-    MenuSec()
+    
+    call(["python", "ProjetoInfrequencia-main\\MenuSec.py"])
 
 def salvar():
     connection = pymysql.connect(host="localhost", 
@@ -66,6 +67,29 @@ def salvar():
         pdf.drawString(500, 770 -y, str(dados_lidos[i][3]))
     pdf.save()
 
+   
+def buscar():
+    armazenar_data = data.get()
+
+    
+    connection = pymysql.connect(host="localhost", 
+                                    user="root",
+                                    passwd="", 
+                                    database="infrequencia")
+  
+    cursor = connection.cursor()
+    comando_SQl = f'SELECT numero, nome, horario, serie FROM terceiro WHERE data LIKE "%{armazenar_data}%" ORDER BY nome'
+    cursor.execute(comando_SQl)
+    print(comando_SQl)
+    results = cursor.fetchall()     
+    connection.commit()
+    connection.close()
+    if results:
+        
+       for i in results:      
+        tv.insert("","end", values = i)
+
+
 
 def center(app):
     
@@ -100,12 +124,18 @@ frame_cima.grid(row=0, column=0, pady=5, padx=0, sticky=NSEW)
 relat = Label(frame_cima, text='Relatório: 3º Informática', anchor=NE, font=("Arial", 20, "bold"), bg=corRoxo, fg=corBranca, padx=3, pady=5)
 relat.place(x=220, y=3)
 
+data = Entry(app, width= 30)
+data.place(x=400, y= 70)
+
+buscar = Button(app, text="Pesquisar", command= buscar, bg="#8A2BE2", fg="#fff",font=("Arial", 8, "bold"))
+buscar.place(x=590, y=68)
+
 tv = ttk.Treeview(app, columns=('numero', 'nome', 'horario', 'serie'), show='headings')
 tv.column('numero', minwidth=10, width=90)
 tv.column('nome', minwidth=70, width=428)
 tv.column('horario', minwidth=10, width=90)
 tv.column('serie', minwidth=10, width=90)
-popular()
+
 
 tv.heading('numero', text="Número")
 tv.heading('nome', text="Nome")
@@ -113,12 +143,12 @@ tv.heading('horario', text="Horário")
 tv.heading('serie', text="Série")
 
 btn_voltar = Button(app, text="Voltar", command= voltar, bg="#8A2BE2", fg="#fff",font=("Arial", 12, "bold"))
-btn_voltar.place(x=248, y=440)
+btn_voltar.place(x=248, y=460)
 
 btn_salvar = Button(app, text="Salvar", command= salvar, bg="#8A2BE2", fg="#fff",font=("Arial", 12, "bold"))
-btn_salvar.place(x=415, y=440)
+btn_salvar.place(x=415, y=460)
 
-tv.place(x=15, y=70)
+tv.place(x=15, y=100)
 tv.configure(height=16)
 
 app.mainloop()

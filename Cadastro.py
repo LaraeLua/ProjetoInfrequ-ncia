@@ -1,261 +1,190 @@
 from tkinter import *
-from tkinter import ttk
+from tkinter import Tk
 from tkinter import messagebox
 import pymysql
-import datetime 
-from subprocess import call
 
+def Login():
+    janela.destroy()
+    from Login import Login
+    Login()
+    
+    
+corVerde = "#00FF00"
+corBranca = "#fff"
+corLaranja = "#da4f1c"
+corPreta = "#000000"
 corRoxo = "#8A2BE2"
 
-data_atual = datetime.date.today()
+def center(janela):
+    janela.update_idletasks()
 
-class Chamada_1:
-    pass
+    width = janela.winfo_width()
+    frm_width = janela.winfo_rootx() - janela.winfo_x()
+    janela_width = width + 2 * frm_width
 
+    height = janela.winfo_height()
+    titlebar_height = janela.winfo_rooty() -janela.winfo_y()
+    janela_height = height + titlebar_height + frm_width
 
-def inserir():    
-    global armazenar_nmr
-    global armazenar_nome
-    global armazenar_hor
-    global armazenar_serie
-    global hoje
-
-    if vnmr.get()=="" or vnome.get()=="" or vhor.get()=="" or vserie.get()=="":
-        messagebox.showinfo(title="ERRO", message="Digite todos os dados")
-        return
-    else:
-        tv.insert("","end", values=(vnmr.get(), vnome.get(), vhor.get(), vserie.get()))
-
-        hoje = datetime.datetime.now()
-        armazenar_nmr = vnmr.get()
-        armazenar_nome = vnome.get()
-        armazenar_hor = vhor.get()
-        armazenar_serie = vserie.get()
-
-        connection = pymysql.connect(host="localhost",
-                                    user="root",
-                                    passwd="",
-                                    database="infrequencia")
-        cursor = connection.cursor()
-
-        query = (f'INSERT INTO primeiro (numero, nome, horario, serie, data) VALUES ("{armazenar_nmr}", "{armazenar_nome}",  "{armazenar_hor}",  "{armazenar_serie}", "{hoje}")')
-        cursor.execute(query)
-        print(query)
-        connection.commit()
-        connection.close()
-
-        vnmr.delete(0, END)
-        vnome.delete(0, END)
-        vhor.delete(0, END)
-        vserie.focus()
-
-
-def deletar(): 
-    if messagebox.askokcancel(title="CONFIRME", message="Você deseja deletar? "):
-
-        item_selecionado = tv.selection()[0]
-        tv.delete(item_selecionado)
-    
-        global armazenar_nmr
-        global armazenar_nome
-        global armazenar_hor
-        global armazenar_serie
-        global hoje
-        
-
-        connection = pymysql.connect(host="localhost",
-                                    user="root",
-                                    passwd="",
-                                    database="infrequencia")
-        cursor = connection.cursor()
-
-        query = (f'DELETE FROM primeiro WHERE numero = "{armazenar_nmr}" and nome = "{armazenar_nome}" and horario = "{armazenar_hor}" and serie = "{armazenar_serie}" and data = "{hoje}"')
-        cursor.execute(query)
-        print(query)
-        connection.commit()
-        connection.close()
-
-    else:
-        pass
-
-
-def editar():    
-    selected_item = tv.selection()[0]
-    tv.item(selected_item, values=(vnmr.get(), vnome.get(), vhor.get(), vserie.get()))
-    
-    global hoje
-
-    connection = pymysql.connect(host="localhost",
-                                    user="root",
-                                    passwd="",
-                                    database="infrequencia")
-    cursor = connection.cursor()
-
-    query = (f'UPDATE primeiro SET numero = "{vnmr.get()}", nome = "{vnome.get()}", horario = "{vhor.get()}", serie = "{vserie.get()}" WHERE data = "{hoje}"')
-    cursor.execute(query)
-    print(query)
-    connection.commit()
-    connection.close()
-
-    vnmr.delete(0, END)
-    vnome.delete(0, END)
-    vhor.delete(0, END)
-    vserie.delete(0, END)
-
-
-def clicker(e):
-    
-    selected = tv.focus()
-    values = tv.item(selected, 'values')
-    
-    vnmr.insert(0, values[0])
-    vnome.insert(0, values[1])
-    vhor.insert(0, values[2])
-    vserie.insert(0, values[3])
-    
-def voltar():
-    app.destroy()
-    
-    call(["python", "MenuProf.py"])
-
-def center(app):
-    
-    app.update_idletasks()
-
-    width = app.winfo_width()
-    frm_width = app.winfo_rootx() - app.winfo_x()
-    app_width = width + 2 * frm_width
-
-    height = app.winfo_height()
-    titlebar_height = app.winfo_rooty() -app.winfo_y()
-    app_height = height + titlebar_height + frm_width
-
-    x = app.winfo_screenwidth() // 2 - app_width // 2
-    y = app.winfo_screenheight() // 2 - app_height // 2
+    x = janela.winfo_screenwidth() // 2 - janela_width // 2
+    y = janela.winfo_screenheight() // 2 - janela_height // 2
 
     # this is the line that will center your window
-    app.geometry('{}x{}+{}+{}'.format(width, height, x, y))
+    janela.geometry('{}x{}+{}+{}'.format(width, height, x, y))
 
-    app.deiconify()
+    janela.deiconify()
 
 
-app = Tk()
-app.title("Sistema de Infrequência")
-app.geometry('730x500')
-app.resizable(width=FALSE, height=FALSE)
-center(app)
+def salvar_dados():
 
-lbnmr = Label(app, text="Número", fg="#8A2BE2", font=("Arial", 12, "bold"), padx=22)
-lbnome = Label(app, text="Nome", fg="#8A2BE2", font=("Arial", 12, "bold"), padx=16)
-lbhor = Label(app, text="Aula", fg="#8A2BE2", font=("Arial", 12, "bold"), padx=80)
-lbserie =Label(app, text="Série", fg="#8A2BE2", font=("Arial", 12, "bold"), padx=22)
+    global armazenar_nome
+    global armazenar_senha
+    global cargo
+    global disciplina
 
-num = IntVar()
-vnmr = ttk.Combobox(app, textvariable= num, width= 7)
-vnmr['values'] = ["01", "02", "03", "04","05", "06", "07", "08", "09", 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,20, 21, 
-                    22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45]
-vnmr.current(0)
-vnmr.delete(0, END) 
+    
+    armazenar_nome = email.get()
+    armazenar_senha = senha.get()
+    cargo = opts.get()
+    disciplina = discVar.get()
+    
+    if armazenar_nome and armazenar_senha and cargo == "Professor" and disciplina:
+        
+        connection = pymysql.connect(host="localhost", 
+                                        user="root", 
+                                        passwd="", 
+                                        database="infrequencia")
+        cursor = connection.cursor()
 
-alunos = StringVar()
-vnome = ttk.Combobox(app, textvariable= alunos, width= 60)
-vnome['values'] = ["Alan Omni Nascimento da Silva",
-                    "Ana Beatriz Pereira Martins",
-                    "Antonia Maria Barroso de Lima",
-                    "Antonio Caua de Brito Augusto Sales",
-                    "Arthur Rocha da Silva Alves",
-                    "Átila do Nascimento Rocha",
-                    "Caio Lucas Moreno Vieira",
-                    "Diogo Yuri dos Santos Rodrigues",
-                    "Francisco Aluisio dos Santos Clemente",
-                    "Francisco Wladson Silva de Freitas",
-                    "Gabriel Oliveira dos Santos",
-                    "George Nicolas de Queiroz Ferreira",
-                    "Giulia de Lima Ferreira",
-                    "Guilherme de Souza Almeida",
-                    "Herberson Vinicius Sousa Falcão",
-                    "Iarley Gabriel Nascimento Sales",
-                    "Isabelle Silvano Lima",
-                    "Isaque Victor Evangelista Pereira",
-                    "Iury Gabriel Nogueira dos Santos",
-                    "João Pedro da Silva Nepomuceno",
-                    "João Pedro Pereira da Cunha",
-                    "Jose Renan Oliveira Nunes",
-                    "Josue Pereira Barros",
-                    "Júlia dos Santos Moreira",
-                    "Kaylanne Yasmyn Vasconcelos Falcao",
-                    "Laís de Sena Oliveira",
-                    "Lara Kivia Gomes de Maria",
-                    "Larissa de Sena Oliveira",
-                    "Leticia Evelin Narciso Gomes",
-                    "Levy Fernandes Feitosa",
-                    "Maria Larissa da Silva Marques",
-                    "Maristela de Sousa Luduvino",
-                    "Miguel Bruno Vieira do Nascimento",
-                    "Natã Alves Medeiros",
-                    "Pedro Henrique de Oliveira Carvalho",
-                    "Pedro Henrique Lima do Nascimento",
-                    "Renan Guilherme Oliveira Rocha",
-                    "Samilly Costa de Araújo",
-                    "Sibelly Araujo da Silva",
-                    "Tamirys Silva de Lima",
-                    "Théo Soares de Matos",
-                    "Thiago Victor de Oliveira Pires Marques",
-                    "Victor Natã Felix Alves",
-                    "Vitoria Luana Braga dos Santos",
-                    "Ana Sophia Gonçalves Alves" 
-                   ]
-vnome.current(0)
-vnome.delete(0, END)
+        query = (f'SELECT * FROM cadastro WHERE email = "{armazenar_nome}" AND senha = "{armazenar_senha}"')
+        cursor.execute(query)
+        results = cursor.fetchall()    
+        connection.commit()
+        connection.close()
+        
+        if results:
+            messagebox.showinfo("Aviso", 'Usuário já existe!')
+            
+        else:
+    
+            connection = pymysql.connect(host="localhost", 
+                                        user="root", 
+                                        passwd="", 
+                                        database="infrequencia")
+            cursor = connection.cursor()
 
-hora = StringVar()
-vhor = ttk.Combobox(app, textvariable= hora, width= 7)
-vhor['values'] = ["1º", "2º", "3º", "4º", "5º", "6º", "7º", "8º", "9º"]
-vhor.current(0)
-vhor.delete(0, END)
+            query = (f'INSERT INTO cadastro(email, senha, cargo, disciplina) VALUES ("{armazenar_nome}", "{armazenar_senha}", "{cargo}", "{disciplina}")')
+            cursor.execute(query)
+            connection.commit()
+            connection.close()
+            messagebox.showinfo ("Aviso", 'Usuário Cadastrado!')
 
-ano = StringVar()
-vserie = ttk.Combobox(app, textvariable= ano, width= 7, state=DISABLED)
-vserie['values'] = ["1º", "2º", "3º"]
-vserie.current(0)
+            email.delete(0, END)
+            senha.delete(0, END)
+            opts.set(0)
+            discVar.delete(0, END)
 
-tv = ttk.Treeview(app, columns=('numero', 'nome', 'horario', 'serie'), show='headings')
+    elif armazenar_nome and armazenar_senha and cargo == "Coordenação":
+        
+        connection = pymysql.connect(host="localhost", 
+                                        user="root", 
+                                        passwd="", 
+                                        database="infrequencia")
+        cursor = connection.cursor()
 
-tv.column('numero', minwidth=10, width=90)
-tv.column('nome', minwidth=70, width=428)
-tv.column('horario', minwidth=10, width=90)
-tv.column('serie', minwidth=10, width=90)
+        query = (f'SELECT * FROM cadastro WHERE email = "{armazenar_nome}" AND senha = "{armazenar_senha}"')
+        cursor.execute(query)
+        results = cursor.fetchall()    
+        connection.commit()
+        connection.close()
+        
+        if results:
+            messagebox.showinfo("Aviso", 'Usuário já existe!')
+            
+        else:
+            
+            connection = pymysql.connect(host="localhost", 
+                                        user="root", 
+                                        passwd="", 
+                                        database="infrequencia")
+            cursor = connection.cursor()
 
-tv.heading('numero', text="Número")
-tv.heading('nome', text="Nome")
-tv.heading('horario', text="Aula")
-tv.heading('serie', text="Série")
+            query = (f'INSERT INTO cadastro(email, senha, cargo) VALUES ("{armazenar_nome}", "{armazenar_senha}", "{cargo}")')
+            cursor.execute(query)
+            connection.commit()
+            connection.close()
+            messagebox.showinfo ("Aviso", 'Usuário Cadastrado!')
 
-btn_voltar = Button(app, text="Voltar", command= voltar, bg="#8A2BE2", fg="#fff",font=("Arial", 12, "bold"),)
-btn_inserir = Button(app, text="Inserir", command= inserir, bg="#8A2BE2", fg="#fff",font=("Arial", 12, "bold"))
-btn_deletar = Button(app, text="Deletar", command= deletar, bg="#8A2BE2", fg="#fff",font=("Arial", 12, "bold"))
-btn_editar = Button(app, text="Editar", command= editar, bg="#8A2BE2", fg="#fff",font=("Arial", 12, "bold"))
+            email.delete(0, END)
+            senha.delete(0, END)
+            opts.set(0)
+            discVar.delete(0, END)
 
-lbnmr.place(x=0, y= 5)
-vnmr.place(x=25, y= 30)
+    else:
+        messagebox.showinfo("Aviso", 'Preencha todos os campos!')
 
-lbnome.place(x=107, y= 5)
-vnome.place(x=125, y= 30)
 
-lbhor.place(x=462, y= 5)
-vhor.place(x=544, y= 30)
+def estado():
+    cargo = opts.get()
 
-lbserie.place(x=609, y= 5)
-vserie.place(x=634, y= 30)
+    if cargo == "Professor":
+        discVar['state'] = NORMAL
+    
+    else:
+        discVar.delete(0, END)
+        discVar['state'] = DISABLED
 
-tv.place(x=15, y=70)
-tv.configure(height=16)
 
-btn_voltar.place(y=440, x=80)
-btn_inserir.place(y=440, x=248)
-btn_deletar.place(y=440, x=415)
-btn_editar.place(y=440, x=585)
 
-tv.bind("<Double-1>", clicker)
+janela = Tk()
+janela.resizable(width=FALSE, height=FALSE)
+janela.title("Cadastre-se")
+janela.configure(background=corBranca)
+janela.geometry("500x450")
+center(janela)
 
-app.mainloop()
+global email
+global senha
+
+frame_cima = Frame(janela, width=500, height=50, relief='flat', bg=corRoxo)
+frame_cima.grid(row=0, column=0, pady=0, padx=0, sticky=NSEW)
+
+cadastrar = Label(frame_cima, text='CADASTRO', anchor=NE, font=("Arial", 20, "bold"), bg=corRoxo, fg=corBranca, padx=3, pady=5)
+cadastrar.place(x=170, y=3)
+
+emailCad = Label(janela, text='Usuário', font=("Arial", 15, "bold"), fg=corRoxo, bg=corBranca)
+emailCad.place(x=85, y=130)
+
+email = Entry(janela, width=40, bg=corBranca, fg=corRoxo)
+email.place(in_=emailCad, x=88, y=0, height=30)
+
+senhaCad = Label(janela, text='Senha', font=("Arial", 15, "bold"), fg=corRoxo, bg=corBranca)
+senhaCad.place(x=85, y=180)
+
+senha = Entry (janela, show="*", width=40, bg=corBranca, fg=corRoxo)
+senha.place(in_=senhaCad, x=88, y=0, height=30)
+
+opts = StringVar()
+opts.set(0)
+prof = Radiobutton(janela, text='Professor(a)', font=("Arial", 10, "bold"), fg=corPreta, bg=corBranca, variable = opts, value= "Professor", command=estado)
+prof.place(x=100, y=270, anchor = 'w')
+
+coord = Radiobutton(janela, text='Coordenação', font=("Arial", 10, "bold"), fg=corPreta, bg=corBranca, variable = opts, value="Coordenação", command=estado)
+coord.place(x=290, y=270, anchor = 'w')
+
+disc = Label(janela, text='Disciplina', font=("Arial", 12, "bold"), fg=corRoxo, bg=corBranca)
+disc.place(x=84, y=300)
+
+discVar = Entry (janela, width=40, bg=corBranca, fg=corRoxo, state=DISABLED)
+discVar.place(in_=disc, x=88, y=0, height=30)
+
+botaologa = Button(janela, width=15, text='Login', font=("Arial", 10, "bold"), fg=corBranca, bg=corRoxo, command = Login)
+botaologa.place(x=85, y=380)
+
+botaoCad = Button(janela, width=15, text='Cadastrar', font=("Arial", 10, "bold"), fg=corBranca, bg=corRoxo,  command= salvar_dados)
+botaoCad.place(x=290, y=380)
+
+
+janela.mainloop()
+
+
